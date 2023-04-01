@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  nginx:
+    image: testje-nginx:latest
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - app
+    restart: always
+
+  app:
+    image: testje:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: dbtestje
+      DB_USER: dbtestje
+      DB_PASSWORD: dbtestje
+
+    restart: always
+
+  db:
+    image: postgres:11.1-alpine
+    environment:
+      POSTGRES_DB: dbtestje
+      POSTGRES_USER: dbtestje
+      POSTGRES_PASSWORD: dbtestje
+    volumes:
+      - db:/var/lib/postgresql/data
+    restart: always
+
+
+volumes:
+  db:
+
